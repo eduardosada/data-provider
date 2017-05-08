@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>data-provider-behavior demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../node_modules/rxjs/bundles/Rx.min.js"></script>
+    <script src="../node_modules/lodash/lodash.min.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../data-provider-behavior.html">
+    <link rel="import" href="data-provider-demo.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic data-provider-behavior demo</h3>
+      <demo-snippet>
+        <template is="dom-bind">
+          <data-provider-demo enabled data="{{categories1}}"></data-provider-demo>
+          <data-provider-demo data="{{categories2}}"></data-provider-demo>
+          <data-provider-demo enabled items="{{categories3}}"></data-provider-demo>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>

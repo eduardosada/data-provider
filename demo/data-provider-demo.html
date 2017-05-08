@@ -1,0 +1,63 @@
+<link rel="import" href="../data-provider-behavior.html">
+
+<dom-module id="data-provider-demo">
+  <template>
+    <style>:host { display: none; }</style>
+  </template>
+  <script>
+  (function() {
+    Polymer({
+      is: 'data-provider-demo',
+
+      behaviors: [
+        window.Polymer.DataProviderBehavior,
+        window.Polymer.DataProviderCollectionBehavior,
+      ],
+
+      properties: {
+        remoteData: {
+          type: Object,
+          notify: true
+        },
+
+        name: {
+          type: String,
+          value: 'categories'
+        },
+
+        keyField: {
+          type: String,
+          value: '_id'
+        }
+      },
+
+      getRemoteData: function() {
+        var store = this._store;
+
+        if (store.fetched) { return; }
+
+        this.loading = true;
+        store.loading = true;
+
+        setTimeout(function() {
+          this.loading = false;
+          store.loading = false;
+          store.fetched = true;
+
+          this.data = {
+            '1': {
+              '_id': '1',
+              'name': 'Bags'
+            },
+            '2': {
+              '_id': '2',
+              'name': 'Clutches'
+            }
+          };
+        }.bind(this), 3000);
+      },
+
+    });
+  }());
+  </script>
+</dom-module>

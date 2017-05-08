@@ -1,0 +1,221 @@
+<script>
+(function() {
+  var STORE = {};
+
+  window.Polymer.DataProviderBehavior = {
+
+    properties: {
+      data: {
+        type: Object,
+        observer: '_onDataChange',
+        notify: true
+      },
+
+      subscription: {
+        type: Object
+      },
+
+      name: {
+        type: String,
+        value: 'products',
+      },
+
+      model: {
+        type: Object,
+        value: function() {
+          return {};
+        }
+      },
+
+      keyField: {
+        type: String,
+        value: 'id'
+      },
+
+      enabled: {
+        type: Boolean,
+        value: false,
+      },
+
+      loading: {
+        type: Boolean,
+        notify: true,
+        value: false,
+      },
+
+      _active: {
+        type: Boolean,
+        value: true
+      },
+
+      _store: {
+        type: Object,
+        computed: '_getStore(name)'
+      },
+
+      __buffer: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      }
+    },
+
+    observers: [
+      '_reflect(data.*)',
+      '_onEnabledChange(enabled, _store)',
+    ],
+
+    getRemoteData: function() {},
+
+    _reflect: function(change) {
+      if (!this._active) {
+        return;
+      }
+
+      this._store.stream.next(change);
+    },
+
+    _getStore: function(name) {
+      if (!STORE[name]) {
+        STORE[name] = {
+          stream: new Rx.Subject(),
+          data: null,
+          fetched: false
+        };
+      }
+      return STORE[name];
+    },
+
+    _onDataChange: function(data) {
+      if (!this._active) {
+        return;
+      }
+
+      if (this.data !== null) {
+        this._store.data = data;
+        this._store.stream.next({
+          path: 'data',
+          value: data
+        });
+      }
+    },
+
+    _onEnabledChange: function(enabled, store) {
+      if (enabled) {
+        if (!store.loading) {
+          this.getRemoteData();
+        }
+
+        this.__resume();
+      } else {
+        this.__pause();
+      }
+    },
+
+    __pause: function() {
+      this.__paused = true;
+    },
+
+    __resume: function() {
+      this.__paused = false;
+
+      if (this.__buffer && this.__buffer.length) {
+        this.__buffer.forEach(this.__exe.bind(this));
+        this.__buffer = [];
+      }
+
+      if (!this.subscription) {
+        this._active = false;
+        this.data = this._store.data; //binded by reference
+        this._active = true;
+        this.subscription = this._bind2Stream(this._store.stream);
+      }
+    },
+
+    __next: function(change) {
+      if (this.__paused) {
+        this.__buffer.push(change.path);
+        this.__buffer = _.uniq(this.__buffer); //lodash
+      } else {
+        this.__exe(change.path);
+      }
+    },
+
+    __exe: function(path) {
+      var value = Polymer.Base.get(path, this._store);
+
+      this._active = false;
+      this.notifyPath(path, value);
+      this._active = true;
+    },
+
+    _bind2Stream: function(stream) {
+      return stream
+        .filter(change => change !== undefined)
+        .subscribe(function(change) {
+          this.__next(change);
+        }.bind(this));
+    }
+
+  };
+
+
+  window.Polymer.DataProviderCollectionBehavior = {
+    properties: {
+      items: {
+        type: Array,
+        computed: '_computeItems(data)',
+        notify: true
+      },
+    },
+
+    observers: [
+      '_reflectDataItem(data.*)',
+    ],
+
+    _computeItems: function(items) {
+      return _.toArray(items); //lodash
+    },
+
+    /*
+     * Reflect data.items changes to items.items
+     */
+    _reflectDataItem: function(change) {
+      var path = change.path.split('.');
+
+      if (path.length > 1) {
+        var key = this.get(path.slice(0, 2).join('.'))[this.keyField];
+        var index = _(this.items).findIndex([this.keyField, key]); //lodash
+        this.notifyPath('items.#' + index + '.' + path.slice(2), change.value);
+      }
+    },
+
+    /*
+     * Reflect items.items changes to data.items
+     */
+    _onItemChanges: function(obProp) {
+      debugger;
+      // this.notifyPath('data')
+    },
+
+  };
+
+  window.Polymer.DataProviderModelBehavior = {
+    properties: {
+      id: {
+        type: String,
+      },
+
+      items: {
+        type: Array,
+        computed: '_computeItems(data)',
+        observer: '_onItemChanges(items.*)',
+        notify: true
+      },
+    },
+
+  };
+
+}());
+</script>
