@@ -81,6 +81,7 @@
         STORE[name] = {
           stream: new Rx.Subject(),
           data: null,
+          loading: false,
           fetched: false
         };
       }
@@ -153,9 +154,7 @@
     _bind2Stream: function(stream) {
       return stream
         .filter(change => change !== undefined)
-        .subscribe(function(change) {
-          this.__next(change);
-        }.bind(this));
+        .subscribe(this.__next.bind(this));
     }
 
   };
@@ -172,6 +171,7 @@
 
     observers: [
       '_reflectDataItem(data.*)',
+      '_onItemChanges(items.*)'
     ],
 
     _computeItems: function(items) {
@@ -187,7 +187,8 @@
       if (path.length > 1) {
         var key = this.get(path.slice(0, 2).join('.'))[this.keyField];
         var index = _(this.items).findIndex([this.keyField, key]); //lodash
-        this.notifyPath('items.#' + index + '.' + path.slice(2), change.value);
+        var itemsPath = 'items.#' + index + '.' + path.slice(2).join('.');
+        this.notifyPath(itemsPath, change.value);
       }
     },
 
@@ -219,3 +220,4 @@
 
 }());
 </script>
+

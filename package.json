@@ -1,0 +1,29 @@
+{
+  "name": "data-provider",
+  "version": "1.0.0",
+  "description": "a wonderful data provider",
+  "main": "data-provider.html",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "rxjs": "^5.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "install": "bower i",
+    "start": "polymer serve -o",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eduardosada/data-provider.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eduardosada/data-provider/issues"
+  },
+  "homepage": "https://github.com/eduardosada/data-provider#readme"
+}

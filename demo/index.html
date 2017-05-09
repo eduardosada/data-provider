@@ -22,10 +22,48 @@
     <div class="vertical-section-container centered">
       <h3>Basic data-provider-behavior demo</h3>
       <demo-snippet>
-        <template is="dom-bind">
-          <data-provider-demo enabled data="{{categories1}}"></data-provider-demo>
-          <data-provider-demo data="{{categories2}}"></data-provider-demo>
-          <data-provider-demo enabled items="{{categories3}}"></data-provider-demo>
+        <template is="dom-bind" id="bind">
+
+          <style>
+          data-provider-demo {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: red;
+          }
+          </style>
+
+          <div class="dp">
+            <input type="checkbox" checked="{{dp1enabled::change}}">
+            <data-provider-demo enabled="{{dp1enabled}}" data="{{categories1}}"></data-provider-demo>
+            <input type="text" value="{{categories1.AAA001.name::input}}">
+          </div>
+
+
+          <div class="dp">
+            <input type="checkbox" checked="{{dp2enabled::change}}">
+            <data-provider-demo  enabled="{{dp2enabled}}" data="{{categories2}}"></data-provider-demo>
+            <input type="text" value="{{categories2.AAA001.name::input}}">
+          </div>
+
+
+          <div class="dp">
+            <input type="checkbox" checked="{{dp3enabled::change}}">
+            <data-provider-demo enabled="{{dp3enabled}}"  items="{{categories3}}"></data-provider-demo>
+            <input type="text" value="{{categories3.0.name::input}}">
+          </div>
+
+          <template is="dom-repeat" items="{{categories3}}">
+            <div><input type="text" value="{{item.name::input}}"></div>
+          </template>
+
+          <script>
+            var domBind = document.querySelector("#bind");
+            domBind.dp1enabled = true;
+            domBind.dp2enabled = false;
+            domBind.dp3enabled = true;
+          </script>
+
         </template>
       </demo-snippet>
     </div>
