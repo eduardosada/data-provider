@@ -169,35 +169,15 @@
       },
     },
 
-    observers: [
-      '_reflectDataItem(data.*)',
-      '_onItemChanges(items.*)'
-    ],
+    _computeItems: function(data) {
+      var arrItems = _.toArray(data); //lodash
 
-    _computeItems: function(items) {
-      return _.toArray(items); //lodash
-    },
-
-    /*
-     * Reflect data.items changes to items.items
-     */
-    _reflectDataItem: function(change) {
-      var path = change.path.split('.');
-
-      if (path.length > 1) {
-        var key = this.get(path.slice(0, 2).join('.'))[this.keyField];
-        var index = _(this.items).findIndex([this.keyField, key]); //lodash
-        var itemsPath = 'items.#' + index + '.' + path.slice(2).join('.');
-        this.notifyPath(itemsPath, change.value);
+      for (var i = arrItems.length - 1; i >= 0; i--) {
+        var key = arrItems[i][this.keyField];
+        this.linkPaths('data.' + key, 'items.#' + i);
       }
-    },
 
-    /*
-     * Reflect items.items changes to data.items
-     */
-    _onItemChanges: function(obProp) {
-      debugger;
-      // this.notifyPath('data')
+      return arrItems;
     },
 
   };

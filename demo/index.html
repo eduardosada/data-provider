@@ -13,6 +13,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../data-provider-behavior.html">
+    <link rel="import" href="../data-array-selector.html">
     <link rel="import" href="data-provider-demo.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -50,7 +51,8 @@
           <div class="dp">
             <input type="checkbox" checked="{{dp3enabled::change}}">
             <data-provider-demo enabled="{{dp3enabled}}"  items="{{categories3}}"></data-provider-demo>
-            <input type="text" value="{{categories3.0.name::input}}">
+            <data-array-selector items="{{categories3}}" selected-index="0" selected="{{cat3Item}}"></data-array-selector>
+            <input type="text" value="{{cat3Item.name::input}}">
           </div>
 
           <template is="dom-repeat" items="{{categories3}}">

@@ -1,0 +1,41 @@
+<dom-module id="data-array-selector">
+  <template>
+    <style>:host { display: none; }</style>
+  </template>
+  <script>
+  (function() {
+    Polymer({
+      is: 'data-array-selector',
+
+      properties: {
+        items: {
+          type: Array
+        },
+
+        selectedIndex: {
+          type: Number
+        },
+
+        _lastIndex: {
+          type: Number
+        },
+
+        selected: {
+          type: Object,
+          notify: true
+        }
+      },
+
+      observers: [
+        '_computeSelectedItem(items, selectedIndex)'
+      ],
+
+      _computeSelectedItem: function(items, selectedIndex) {
+        this.unlinkPaths('selected');
+        this.selected = items[selectedIndex];
+        this.linkPaths('selected', 'items.#' + selectedIndex);
+      }
+    });
+  }());
+  </script>
+</dom-module>
